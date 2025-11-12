@@ -4,11 +4,7 @@
 #include "SXGameInstance.h"
 #include "JsonObjectConverter.h"
 #include "UObject/SavePackage.h"
-#include "SXUnrealObject.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Example/SXFlyable.h"
-#include "Example/SXPigeon.h"
-#include "Example/SXEagle.h"
 
 USXGameInstance::USXGameInstance()
 {
