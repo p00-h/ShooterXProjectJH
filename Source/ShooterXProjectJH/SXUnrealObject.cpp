@@ -3,10 +3,20 @@
 
 #include "SXUnrealObject.h"
 
-SXUnrealObject::SXUnrealObject()
+USXUnrealObject::USXUnrealObject()
 {
+	Name = TEXT("USXUnrealObject CDO");
 }
 
-SXUnrealObject::~SXUnrealObject()
+void USXUnrealObject::HelloUnreal()
 {
+	UE_LOG(LogTemp, Log, TEXT("USXUnrealObject::HelloUnreal() has been called"));
+}
+
+void USXUnrealObject::Serialize(FArchive& Ar)
+{
+	Super::Serialize(Ar);
+
+	Ar << Name;
+	Ar << ID;
 }
