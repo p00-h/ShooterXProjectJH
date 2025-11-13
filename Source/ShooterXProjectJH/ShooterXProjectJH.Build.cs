@@ -16,6 +16,8 @@ public class ShooterXProjectJH : ModuleRules
 			// Json Modules
 			"Json", "JsonUtilities",
 			
+			// Input
+			"EnhancedInput",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

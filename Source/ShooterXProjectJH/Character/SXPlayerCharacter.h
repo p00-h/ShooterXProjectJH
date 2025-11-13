@@ -1,0 +1,56 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Character/SXCharacterBase.h"
+#include "InputActionValue.h"
+#include "SXPlayerCharacter.generated.h"
+
+class USpringArmComponent;
+class UCameraComponent;
+class USXInputConfig;
+class UInputMappingContext;
+
+/**
+ * 
+ */
+UCLASS()
+class SHOOTERXPROJECTJH_API ASXPlayerCharacter : public ASXCharacterBase
+{
+	GENERATED_BODY()
+
+#pragma region Override ACharacter
+public:
+	ASXPlayerCharacter();
+
+	virtual void BeginPlay() override;
+
+protected:
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+#pragma endregion
+
+#pragma region Input
+
+private:
+	void InputMove(const FInputActionValue& InValue);
+
+	void InputLook(const FInputActionValue& InValue);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<USXInputConfig> PlayerCharacterInputConfig;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TObjectPtr<UInputMappingContext> PlayerCharacterInputMappingContext;
+
+#pragma endregion	
+};
