@@ -8,17 +8,34 @@
 #include "EnhancedInputSubsystems.h"
 #include "Input/SXInputConfig.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ASXPlayerCharacter::ASXPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpingArmComponent"));
-	SpringArmComponent -> SetupAttachment(RootComponent);
-	SpringArmComponent -> TargetArmLength = 400.f;
-	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f);
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->TargetArmLength = 400.f;
+	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bInheritPitch = true;
+	SpringArmComponent->bInheritYaw = true;
+	SpringArmComponent->bInheritRoll = false;
+	SpringArmComponent->bDoCollisionTest = true;
+	SpringArmComponent->SetRelativeLocation(FVector(0.f, 25.f, 25.f));
+
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->bUsePawnControlRotation = false;
 }
 
 void ASXPlayerCharacter::BeginPlay()
@@ -35,6 +52,7 @@ void ASXPlayerCharacter::BeginPlay()
 		}
 	}
 }
+
 void ASXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -43,30 +61,31 @@ void ASXPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	if (IsValid(EnhancedInputComponent) == true)
 	{
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
-	}
-
-	if (IsValid(EnhancedInputComponent) == true)
-	{
-		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Jump, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(PlayerCharacterInputConfig->Jump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
 }
+
 void ASXPlayerCharacter::InputMove(const FInputActionValue& InValue)
 {
 	FVector2D MovementVector = InValue.Get<FVector2D>();
 
-	AddMovementInput(GetActorForwardVector(), MovementVector.X);
-	AddMovementInput(GetActorRightVector(), MovementVector.Y);
+	const FRotator ControlRotation = GetController()->GetControlRotation();
+	const FRotator ControlRotationYaw(0.f, ControlRotation.Yaw, 0.f);
+
+	const FVector ForwardVector = FRotationMatrix(ControlRotationYaw).GetUnitAxis(EAxis::X);
+	const FVector RightVector = FRotationMatrix(ControlRotationYaw).GetUnitAxis(EAxis::Y);
+
+	AddMovementInput(ForwardVector, MovementVector.X);
+	AddMovementInput(RightVector, MovementVector.Y);
 }
 
 void ASXPlayerCharacter::InputLook(const FInputActionValue& InValue)
 {
-	if (IsValid(GetController()) == true)
-	{
-		FVector2D LookVector = InValue.Get<FVector2D>();
+	FVector2D LookVector = InValue.Get<FVector2D>();
 
-		AddControllerYawInput(LookVector.X);
-		AddControllerPitchInput(LookVector.Y);
-	}
+	AddControllerYawInput(LookVector.X);
+	AddControllerPitchInput(LookVector.Y);
 }
 

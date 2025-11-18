@@ -12,6 +12,7 @@ class UCameraComponent;
 class USXInputConfig;
 class UInputMappingContext;
 
+
 /**
  * 
  */
@@ -20,7 +21,9 @@ class SHOOTERXPROJECTJH_API ASXPlayerCharacter : public ASXCharacterBase
 {
 	GENERATED_BODY()
 
+
 #pragma region Override ACharacter
+
 public:
 	ASXPlayerCharacter();
 
@@ -30,10 +33,10 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	TObjectPtr<UCameraComponent> CameraComponent;
 
 #pragma endregion
@@ -52,5 +55,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess))
 	TObjectPtr<UInputMappingContext> PlayerCharacterInputMappingContext;
 
-#pragma endregion	
+#pragma endregion
+	
 };

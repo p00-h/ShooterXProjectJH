@@ -1,0 +1,33 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "SXWeapon.generated.h"
+
+class ASXPlayerCharacter;
+class USXPickupComponent;
+
+UCLASS()
+class SHOOTERXPROJECTJH_API ASXWeapon : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	ASXWeapon();
+	
+	USXPickupComponent* GetPickupComponent() const { return PickupComponent; }
+
+protected:
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void HandleOnPickUp(ASXPlayerCharacter* InPickUpCharacter);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USXPickupComponent> PickupComponent;
+
+
+};
